@@ -4,11 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "proxy-identity-header-trust"
-version = "0.1.0"
+version = "0.1.1"
 description = "Local authenticated-proxy identity header boundary lab"
 requires-python = ">=3.10"
 license = "MIT"
-authors = [{ name = "dhtfish98" }]
+authors = [{ name = "dhtfish98", email = "109978225+dhtfish-98@users.noreply.github.com" }]
 dependencies = []
 classifiers = [
   "Programming Language :: Python :: 3",

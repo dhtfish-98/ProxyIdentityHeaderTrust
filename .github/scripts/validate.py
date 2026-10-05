@@ -127,7 +127,8 @@ def main() -> int:
             "/tests/test_proxy_identity.py", "/tests/run_local_experiment.py", "/LICENSE", "/pyproject.toml",
         ))
         checks["metadata_author_version_license"] = all(line in metadata.splitlines() for line in (
-            "Name: proxy-identity-header-trust", "Version: 0.1.0", "Author: dhtfish98", "License-Expression: MIT",
+            "Name: proxy-identity-header-trust", "Version: 0.1.1",
+            "Author-email: dhtfish98 <109978225+dhtfish-98@users.noreply.github.com>", "License-Expression: MIT",
         ))
         receipt["artifacts"] = {
             "wheel": {"path": str(wheel), "sha256": digest(wheel), "files": wheel_files},
@@ -144,7 +145,7 @@ def main() -> int:
         installed_env.pop("PYTHONPATH", None)
         installed_check = (
             "import proxy_identity_header_trust as p; from pathlib import Path; "
-            "assert p.__version__ == '0.1.0'; "
+            "assert p.__version__ == '0.1.1'; "
             f"assert str(Path(p.__file__).resolve()).startswith({str(VENV.resolve())!r}); "
             "print(p.__version__, p.__file__)"
         )
@@ -174,7 +175,7 @@ def main() -> int:
             and ".github/scripts/validate.py" in (DOC / "README.md").read_text()
             and (DOC / "LICENSE").is_file()
         )
-        checks["author_version"] = receipt["author"] == "dhtfish98" and receipt["version"] == "0.1.0"
+        checks["author_version"] = receipt["author"] == "dhtfish98" and receipt["version"] == "0.1.1"
         return 0 if all(checks.values()) else 1
     finally:
         receipt["finished_at_utc"] = datetime.now(timezone.utc).isoformat()

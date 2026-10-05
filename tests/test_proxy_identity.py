@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 from contextlib import ExitStack
+import base64
 from http.client import HTTPConnection
 import json
 import secrets
 import unittest
+from urllib.parse import urlencode
 
 from proxy_identity_header_trust.lab import (
     BackendHandler,
@@ -167,6 +169,22 @@ class HeaderTrustTests(unittest.TestCase):
             })
             response = connection.getresponse()
             self.assertEqual(response.status, 401)
+            self.assertEqual(json.loads(response.read()), {"active": False})
+        finally:
+            connection.close()
+
+    def test_issuer_rejects_ambiguous_body_framing(self) -> None:
+        body = urlencode({"token": self.viewer}).encode("ascii")
+        credential = "Basic " + base64.b64encode(("proxy:" + self.secret).encode("ascii")).decode("ascii")
+        connection = HTTPConnection(*self.issuer_address, timeout=3)
+        try:
+            connection.putrequest("POST", "/introspect")
+            connection.putheader("Authorization", credential)
+            connection.putheader("Content-Length", str(len(body)))
+            connection.putheader("Transfer-Encoding", "chunked")
+            connection.endheaders(body)
+            response = connection.getresponse()
+            self.assertEqual(response.status, 400)
             self.assertEqual(json.loads(response.read()), {"active": False})
         finally:
             connection.close()

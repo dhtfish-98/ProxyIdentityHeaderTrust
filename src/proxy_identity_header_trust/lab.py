@@ -86,11 +86,19 @@ class IssuerHandler(_QuietHandler):
             _reply(self, 401, {"active": False})
             return
         sizes = _headers(self.headers, "Content-Length")
-        if len(sizes) != 1 or not sizes[0].isdigit() or not 1 <= int(sizes[0]) <= 1024:
+        if _headers(self.headers, "Transfer-Encoding") or len(sizes) != 1 or not sizes[0].isascii() or not sizes[0].isdigit():
             _reply(self, 400, {"active": False})
             return
         try:
-            form = parse_qs(self.rfile.read(int(sizes[0])).decode("ascii"), strict_parsing=True)
+            size = int(sizes[0])
+        except ValueError:
+            _reply(self, 400, {"active": False})
+            return
+        if not 1 <= size <= 1024:
+            _reply(self, 400, {"active": False})
+            return
+        try:
+            form = parse_qs(self.rfile.read(size).decode("ascii"), strict_parsing=True)
         except (UnicodeError, ValueError):
             _reply(self, 400, {"active": False})
             return
