@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling>=1.25,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "proxy-identity-header-trust"
+version = "0.1.0"
+description = "Local authenticated-proxy identity header boundary lab"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "dhtfish98" }]
+dependencies = []
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Topic :: Security",
+  "Topic :: Internet :: WWW/HTTP",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/proxy_identity_header_trust"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/tests", "/pyproject.toml", "/LICENSE"]

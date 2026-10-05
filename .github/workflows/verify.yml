@@ -1,0 +1,30 @@
+name: Proxy identity header trust verification
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.14']
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Verify source, wheel, and loopback proxy experiment
+        env:
+          PIP_CACHE_DIR: ${{ github.workspace }}/Build/cache/pip
+          UV_CACHE_DIR: ${{ github.workspace }}/Build/cache/uv
+          PYTHONPYCACHEPREFIX: ${{ github.workspace }}/Build/cache/pycache
+        run: |
+          mkdir -p Build/cache/pip Build/cache/uv Build/cache/pycache
+          python -m pip install uv==0.11.4
+          python .github/scripts/validate.py
